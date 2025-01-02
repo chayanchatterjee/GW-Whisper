@@ -19,8 +19,8 @@ from transformers import WhisperFeatureExtractor
 import gc
 from peft import LoraConfig, get_peft_model
 
-from .dataset import two_channel_LigoBinaryData
-from .model import two_channel_ligo_binary_classifier, TwoChannelLIGOBinaryClassifierCNN
+from .dataset import one_channel_LigoBinaryData
+from .model import one_channel_ligo_binary_classifier
 from .utils import EarlyStopper, save_plot, get_paths
 
 
@@ -50,7 +50,7 @@ def load_models(lora_weights_path, dense_layers_path, num_classes=1):
     peft_model = PeftModel.from_pretrained(whisper_model, lora_weights_path)
 
     # Create the main model using the encoder
-    model = two_channel_ligo_binary_classifier(encoder=peft_model, num_classes=num_classes)
+    model = one_channel_ligo_binary_classifier(encoder=peft_model, num_classes=num_classes)
 
     # Load the dense classifier weights
     model.classifier.load_state_dict(torch.load(dense_layers_path))
@@ -219,8 +219,8 @@ def main(args):
     ds = load_concatenated_dataset(args.data_path)
     ds_split = ds.train_test_split(test_size=args.test_size, seed=args.seed, shuffle=True)
     
-    train_data = two_channel_LigoBinaryData(ds_split['train'], device, encoder=args.encoder)
-    valid_data = two_channel_LigoBinaryData(ds_split['test'], device, encoder=args.encoder)
+    train_data = one_channel_LigoBinaryData(ds_split['train'], device, encoder=args.encoder)
+    valid_data = one_channel_LigoBinaryData(ds_split['test'], device, encoder=args.encoder)
     
     train_loader = DataLoader(train_data, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
     valid_loader = DataLoader(valid_data, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
@@ -242,9 +242,9 @@ def main(args):
     
     
     if args.method == 'full_finetune':
-        models.append(('full_finetune', two_channel_ligo_binary_classifier(encoder)))
+        models.append(('full_finetune', one_channel_ligo_binary_classifier(encoder)))
         
-        for param in two_channel_ligo_binary_classifier(encoder).parameters():
+        for param in one_channel_ligo_binary_classifier(encoder).parameters():
             param.requires_grad = True
             
             
@@ -256,7 +256,7 @@ def main(args):
         for name, param in whisper_model_with_lora.named_parameters():
             param.requires_grad = 'lora' in name
         
-        models.append(('LoRA', two_channel_ligo_binary_classifier(whisper_model_with_lora)))
+        models.append(('LoRA', one_channel_ligo_binary_classifier(whisper_model_with_lora)))
         
     
     elif args.method == 'DoRA':
@@ -267,7 +267,7 @@ def main(args):
         for name, param in whisper_model_with_dora.named_parameters():
             param.requires_grad = 'lora' in name
         
-        models.append(('DoRA', two_channel_ligo_binary_classifier(whisper_model_with_dora)))
+        models.append(('DoRA', one_channel_ligo_binary_classifier(whisper_model_with_dora)))
         
     
     for model_name, model in models:
