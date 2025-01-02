@@ -18,7 +18,7 @@ LIGO consists of two large-scale interferometers located in Hanford, Washington,
 | Repository | Status | Description | Paper link |
 |------------|---------|-------------|-------------------|
 | [Detection](https://github.com/chayanchatterjee/GW-Whisper/tree/main/Detection) | Public | Code repo for signal vs. noise classification | [link](https://arxiv.org/abs/2412.20789) |
-| Glitch classification](https://github.com/chayanchatterjee/GW-Whisper/tree/main/Glitch_classification) | Public | Code repo for glitch classification | [link](https://arxiv.org/abs/2412.20789) |
+| [Glitch classification](https://github.com/chayanchatterjee/GW-Whisper/tree/main/Glitch_classification)| Public | Code repo for glitch classification | [link](https://arxiv.org/abs/2412.20789) |
 
 ## Getting Started
 
