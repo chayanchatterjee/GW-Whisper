@@ -19,8 +19,8 @@ from transformers import WhisperFeatureExtractor
 import gc
 from peft import LoraConfig, get_peft_model
 
-from .dataset import LigoBinaryData, two_channel_LigoBinaryData
-from .model import BaselineModel, ligo_binary_classifier, two_channel_ligo_binary_classifier, TwoChannelLIGOBinaryClassifierCNN, LoRA_layer, LoRa_linear
+from .dataset import two_channel_LigoBinaryData
+from .model import two_channel_ligo_binary_classifier, TwoChannelLIGOBinaryClassifierCNN
 from .utils import EarlyStopper, save_plot, get_paths
 
 
