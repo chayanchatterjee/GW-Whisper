@@ -1,0 +1,24 @@
+import argparse
+from src.train import main
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Training pipeline for LIGO binary classification model',
+                                     epilog='This script trains a binary classification model with whisper encoder, make sure the preprocess.py script has been run before running this script. \
+                                        Example of usage: python train.py --data-path /path/to/data --results-path /path/to/results --log-dir /path/to/logs --batch-size 32 --num-epochs 100 --learning-rate 3e-5 --seed 42 --num-workers 4 --method DoRA --lora-rank 8 --lora-alpha 32')
+    
+    parser.add_argument('--data-path', type=str, default='/workspace/ligo_data/data_ts/Whisper_train_mass-8to100_resampled_train', help='Path to the dataset')
+    parser.add_argument('--results-path', type=str, default='/workspace/ligo_results/', help='Path to save the results')
+    parser.add_argument('--log-dir', type=str, default='/workspace/ligo_results/logs', help='Directory to save the TensorBoard logs')
+    parser.add_argument('--load_model_path', type=str, default=None)
+    parser.add_argument('--batch-size', type=int, default=32, help='Batch size')
+    parser.add_argument('--num-epochs', type=int, default=40, help='Number of epochs')
+    parser.add_argument('--learning-rate', type=float, default=1e-4, help='Learning rate')
+    parser.add_argument('--seed', type=int, default=42, help='Random seed')
+    parser.add_argument('--num-workers', type=int, default=12, help='Number of workers')
+    parser.add_argument('--method', type=str, default='LoRA', help='Select Which model to train, options are: lora, full_finetune, frozen_encoder. Select lora or frozen_encoder if machine does not have enough Vram. If using lora, make sure to set the --lora-rank, --lora-alpha, and --lora-mlp flags')
+    parser.add_argument('--lora-rank', type=int, default=8, help='LoRA rank')
+    parser.add_argument('--lora-alpha', type=int, default=32, help='LoRA alpha')
+  
+    args = parser.parse_args()
+    
+    main(args)
