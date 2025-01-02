@@ -17,7 +17,7 @@ LIGO consists of two large-scale interferometers located in Hanford, Washington,
 
 | Repository | Status | Description | Paper link |
 |------------|---------|-------------|-------------------|
-| [detection](link-to-repo) | Public | description | [link](link-to-paper) |
+| [detection](https://github.com/vanderbilt-data-science/LIGO) | Public | description | [link](link-to-paper) |
 | [glitch-classification](link-to-repo) | Public | description | [link](link-to-paper) |
 | [parameter-estimation](link-to-repo) | Private | description | [link](link-to-paper) |
 
