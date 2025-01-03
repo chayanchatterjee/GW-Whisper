@@ -43,24 +43,19 @@ GW-Whisper/
 |   ├── data/
 │   ├── results/   
 │   ├── src/
-│   │   ├── model.py
-│   │   ├── dataset.py
-│   │   └── utils.py
+│   │   └── ...
 |   ├── preprocess.py  
 │   ├── run_train.py
 │   └── ...
 ├── Glitch_classification/
 │   ├── src/
-|   |   ├── model.py
 │   │   └── ...
 │   ├── results/
 |   ├── train.py
 │   └── generate_glitch_dataset.py
 |   └── ...
-├── Figure_1.png
-├── README.md
 └── requirements.txt
-
+└── ...
 ```
 ## Team
 
