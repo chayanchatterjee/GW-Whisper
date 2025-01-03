@@ -124,29 +124,32 @@ def bootstrap_roc_curve(all_labels, all_preds, num_bootstrap=1000):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Evaluate LIGO models with 1D or 2D data")
     parser.add_argument('--model_type', type=str, choices=['1D', '2D'], required=True, help="Model type: 1D or 2D")
-    parser.add_argument('--lora_weights_path', type=str, required=True, help="Path to LoRA weights")
-    parser.add_argument('--dense_layers_path', type=str, required=True, help="Path to dense layer weights")
     args = parser.parse_args()
 
     device = torch.device('cuda')
 
     if args.model_type == '2D':
         dataset_paths = [
-            '/workspace/ligo_data/Binary_classification_tests/Test_Whisper_SNR-6_resampled',
-            '/workspace/ligo_data/Binary_classification_tests/Test_Whisper_SNR-8_resampled_train',
-            '/workspace/ligo_data/Binary_classification_tests/Test_Whisper_SNR-10_resampled'
+            '/GW-Whisper/Detection/data/Test_Whisper_SNR-6_resampled',
+            '/GW-Whisper/Detection/data/Test_Whisper_SNR-8_resampled',
+            '/GW-Whisper/Detection/data/Test_Whisper_SNR-10_resampled'
         ]
         dataset_class = two_channel_LigoBinaryData
+        lora_weights_path = '/GW-Whisper/Detection/results/models/Two_detectors/best_lora_weights/'
+        dense_layers_path = '/GW-Whisper/Detection/results/models/Two_detectors/best_dense_layers.pth'
+        
     else:
         dataset_paths = [
-            '/workspace/ligo_data/data_ts/Test_Whisper_SNR-5_single_det_resampled',
-            '/workspace/ligo_data/data_ts/Test_Whisper_SNR-7_single_det_resampled',
-            '/workspace/ligo_data/data_ts/Test_Whisper_SNR-9_single_det_resampled'
+            '/GW-Whisper/Detection/data/Test_Whisper_SNR-5_single_det_resampled',
+            '/GW-Whisper/Detection/data/Test_Whisper_SNR-7_single_det_resampled',
+            '/GW-Whisper/Detection/data/Test_Whisper_SNR-9_single_det_resampled'
         ]
         dataset_class = one_channel_LigoBinaryData
+        lora_weights_path = '/GW-Whisper/Detection/results/models/Single_detectors/best_lora_weights/'
+        dense_layers_path = '/GW-Whisper/Detection/results/models/Single_detectors/best_dense_layers.pth'
 
     datasets = [load_from_disk(path) for path in dataset_paths]
-    test_sets = [dataset_class(ds, device, 'small') for ds in datasets]
+    test_sets = [dataset_class(ds, device, 'tiny') for ds in datasets]
 
     model = load_models(args.lora_weights_path, args.dense_layers_path, model_type=args.model_type)
     model.eval()
@@ -164,7 +167,7 @@ if __name__ == '__main__':
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
         plt.legend()
-        plt.savefig(f'/workspace/ligo_results/ROC_curve_SNR_{i}_{args.model_type}.png')
+        plt.savefig(f'/GW-Whisper/Detection/results/figures/ROC_curve_SNR_{i}_{args.model_type}.png')
 
         
 # Example usage: python script.py --model_type 2D --lora_weights_path path_to_lora_weights --dense_layers_path path_to_dense_layers

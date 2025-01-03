@@ -6,9 +6,9 @@ if __name__ == '__main__':
                                      epilog='This script trains a binary classification model with whisper encoder, make sure the preprocess.py script has been run before running this script. \
                                         Example of usage: python train.py --data-path /path/to/data --results-path /path/to/results --log-dir /path/to/logs --batch-size 32 --num-epochs 100 --learning-rate 3e-5 --seed 42 --num-workers 4 --method DoRA --lora-rank 8 --lora-alpha 32')
     
-    parser.add_argument('--data-path', type=str, default='/workspace/ligo_data/data_ts/Whisper_train_mass-8to100_resampled_train', help='Path to the dataset')
-    parser.add_argument('--results-path', type=str, default='/workspace/ligo_results/', help='Path to save the results')
-    parser.add_argument('--log-dir', type=str, default='/workspace/ligo_results/logs', help='Directory to save the TensorBoard logs')
+    parser.add_argument('--data-path', type=str, default='/GW-Whisper/Detection/data/Whisper_train_mass-8to100_resampled_train', help='Path to the dataset')
+    parser.add_argument('--results-path', type=str, default='/GW-Whisper/Detection/results/', help='Path to save the results')
+    parser.add_argument('--log-dir', type=str, default='/GW-Whisper/Detection/results/logs', help='Directory to save the TensorBoard logs')
     parser.add_argument('--load_model_path', type=str, default=None)
     parser.add_argument('--load_lora_weights', type=str, default=None)
     parser.add_argument('--load_dense_weights', type=str, default=None)
