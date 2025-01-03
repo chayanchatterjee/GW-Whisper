@@ -43,13 +43,11 @@ GW-Whisper/
 |   ├── data/
 │   ├── results/   
 │   ├── src/
-│   │   └── ...
 |   ├── preprocess.py  
 │   ├── run_train.py
 │   └── ...
 ├── Glitch_classification/
 │   ├── src/
-│   │   └── ...
 │   ├── results/
 |   ├── train.py
 │   └── generate_glitch_dataset.py
