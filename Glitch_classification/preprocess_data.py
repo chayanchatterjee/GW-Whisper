@@ -111,8 +111,8 @@ def process_folder(folder_path, output_name):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Process HDF5 files and resample timeseries data.")
-    parser.add_argument('--folder_path', type=str, default='/GW-Whisper/Glitch_classification/data/generic/test_data', help="Path to the folder containing HDF5 files.")
-    parser.add_argument('--output_name', type=str, default='/GW-Whisper/Glitch_classification/data/generic/test_data/generic_combined_resampled_dataset_test', help="Path to save the combined dataset.")
+    parser.add_argument('--folder_path', type=str, default='Glitch_classification/data/generic/test_data', help="Path to the folder containing HDF5 files.")
+    parser.add_argument('--output_name', type=str, default='Glitch_classification/data/generic/test_data/generic_combined_resampled_dataset_test', help="Path to save the combined dataset.")
     args = parser.parse_args()
 
     process_folder(args.folder_path, args.output_name)

@@ -85,14 +85,14 @@ def evaluate(model, data_loader, device, criterion, label_encoder):
         'all_preds': all_preds,
     }
 
-def train(model, train_loader, val_loader, optimizer, criterion, device, num_epochs, results_path, lora_weights_path, dense_weights_path, model_name, writer, label_encoder, start_epoch=0):
+def train(model, train_loader, val_loader, optimizer, criterion, device, num_epochs, results_path, lora_weights_path, dense_weights_path, model_name, writer, label_encoder):
     model.to(device)
     criterion = criterion.to(device)
     best_val_loss = float('inf')
     early_stopper = EarlyStopper(patience=60)
     best_cm_path = None
 
-    for epoch in range(start_epoch, num_epochs):
+    for epoch in range(num_epochs):
         model.train()
         train_loss = 0.0
         for inputs, labels, snr in tqdm(train_loader, desc=f"Epoch {epoch+1}"):
@@ -188,22 +188,13 @@ def main(args):
     criterion = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate)
 
-    start_epoch = 0
-    if args.checkpoint_path:
-        if os.path.exists(args.checkpoint_path):
-            checkpoint = torch.load(args.checkpoint_path, map_location=device)
-            model.encoder.load_state_dict(checkpoint['encoder_state_dict'])
-            model.classifier.load_state_dict(checkpoint['classifier_state_dict'])
-            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-            start_epoch = checkpoint['epoch']
-            print(f"Resuming training from checkpoint at epoch {start_epoch}")
 
     print(f"Training model...")
     train(
         model, train_loader, valid_loader, optimizer, criterion, device, args.num_epochs, args.results_path,
         os.path.join(args.results_path, f"{args.model_name}_best_lora_weights.pth"),
         os.path.join(args.results_path, f"{args.model_name}_best_dense_weights.pth"),
-        args.model_name, writer, label_encoder, start_epoch
+        args.model_name, writer, label_encoder
     )
 
     writer.close()
@@ -212,17 +203,17 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--train_data_path", type=str, required=True, help="Path to the training dataset")
     parser.add_argument("--test_data_path", type=str, required=True, help="Path to the test dataset")
-    parser.add_argument("--log_dir", type=str, default="/GW-Whisper/Glitch_classification/results/logs", help="TensorBoard log directory")
-    parser.add_argument("--results_path", type=str, default="/GW-Whisper/Glitch_classification/results/models/generic", help="Path to save results and models")
+    parser.add_argument("--log_dir", type=str, default="Glitch_classification/results/generic/logs", help="TensorBoard log directory")
+    parser.add_argument("--results_path", type=str, default="Glitch_classification/results/generic", help="Path to save results and models")
     parser.add_argument("--encoder", type=str, default="tiny", help="Whisper encoder size")
     parser.add_argument("--batch_size", type=int, default=32, help="Batch size")
     parser.add_argument("--num_epochs", type=int, default=200, help="Number of epochs")
-    parser.add_argument("--learning_rate", type=float, default=8e-5, help="Learning rate")
+    parser.add_argument("--learning_rate", type=float, default=1e-4, help="Learning rate")
     parser.add_argument("--num_workers", type=int, default=4, help="Number of data loader workers")
     parser.add_argument("--model_name", type=str, default="multi_class_model", help="Name of the model")
     parser.add_argument("--method", type=str, choices=['LoRA', 'DoRA'], required=True, help="Method to apply (LoRA or DoRA)")
     parser.add_argument("--lora_rank", type=int, default=8, help="Rank for LoRA")
     parser.add_argument("--lora_alpha", type=int, default=32, help="Alpha for LoRA")
-    parser.add_argument("--checkpoint_path", type=str, help="Path to the checkpoint file for resuming training")
+    
     args = parser.parse_args()
     main(args)
