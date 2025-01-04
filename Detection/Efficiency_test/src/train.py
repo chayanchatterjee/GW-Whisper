@@ -28,8 +28,8 @@ import os
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-outfiles_dir = 'outfiles'
-state_dicts_dir = 'state_dicts'
+outfiles_dir = 'Detection/Efficiency_test/src/outfiles'
+state_dicts_dir = 'Detection/Efficiency_test/src/state_dicts'
 
 # range of optimal SNRs (uniform distribution)
 # in the current curriculum learning implementation, this is irrelevant but required to define

@@ -23,7 +23,7 @@ faps = [0.1, 0.01, 0.001, 0.0001, 0.00001]
 
 device = 'cuda'
 remove_softmax = True
-output_directory = 'efficiencies'
+output_directory = 'Detection/Efficiency_test/src/efficiencies'
 
 import torch
 import sys
@@ -41,10 +41,10 @@ print('indices_run = %s' % str(indices_run), flush=True)
 #indiceses_epoch = [range(1, epochs+1) for _ in range(len(indices_run))]
 indiceses_epoch = [[40, 55, 70]]
 
-state_dict_fnameses = [[os.path.join('state_dicts', 'state_dict_run_%04i_epoch_%04i.pt' % (i_run, i_epoch)) for i_epoch in indices_epoch] for i_run, indices_epoch in zip(indices_run, indiceses_epoch)]	# in case of training split over multiple folders or inequal lengths of individual runs, modify this line
+state_dict_fnameses = [[os.path.join('Detection/Efficiency_test/src/state_dicts', 'state_dict_run_%04i_epoch_%04i.pt' % (i_run, i_epoch)) for i_epoch in indices_epoch] for i_run, indices_epoch in zip(indices_run, indiceses_epoch)]	# in case of training split over multiple folders or inequal lengths of individual runs, modify this line
 
-lora_weights_fnameses = [[os.path.join('state_dicts', 'lora_weights_run_%04i_epoch_%04i.pt' % (i_run, i_epoch)) for i_epoch in indices_epoch] for i_run, indices_epoch in zip(indices_run, indiceses_epoch)]	# in case of training split over multiple folders or inequal lengths of individual runs, modify this line
-dense_layers_fnameses = [[os.path.join('state_dicts', 'dense_layers_run_%04i_epoch_%04i.pth' % (i_run, i_epoch)) for i_epoch in indices_epoch] for i_run, indices_epoch in zip(indices_run, indiceses_epoch)]	# in case of training split over multiple folders or inequal lengths of individual runs, modify this line
+lora_weights_fnameses = [[os.path.join('Detection/Efficiency_test/src/state_dicts', 'lora_weights_run_%04i_epoch_%04i.pt' % (i_run, i_epoch)) for i_epoch in indices_epoch] for i_run, indices_epoch in zip(indices_run, indiceses_epoch)]	# in case of training split over multiple folders or inequal lengths of individual runs, modify this line
+dense_layers_fnameses = [[os.path.join('Detection/Efficiency_test/src/state_dicts', 'dense_layers_run_%04i_epoch_%04i.pth' % (i_run, i_epoch)) for i_epoch in indices_epoch] for i_run, indices_epoch in zip(indices_run, indiceses_epoch)]	# in case of training split over multiple folders or inequal lengths of individual runs, modify this line
 
 # range of optimal SNRs (uniform distribution)
 # in the current curriculum learning implementation, this is irrelevant but required to define

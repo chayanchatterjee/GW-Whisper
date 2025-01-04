@@ -13,7 +13,7 @@ index_filecol = [1, 4]  # Columns for the specified FAPs
 epoch_axis = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 40, 55, 70]
 
 # Filepath pattern
-file_pattern = 'efficiencies/out_efficiencies_run_0000_epoch_{:04d}.txt'
+file_pattern = 'Detection/Efficiency_test/src/efficiencies/out_efficiencies_run_0000_epoch_{:04d}.txt'
 
 # Indices for SNR rows in the files corresponding to the specified SNRs
 indices_filerow_plot = [0, 1, 2, 4, 6]
@@ -69,5 +69,5 @@ for i, (ax, fap_index) in enumerate(zip(axes, index_filecol)):
 
 # Adjust layout and save the plot
 fig.tight_layout()
-fig.savefig('efficiency_plots_single_row.png')
+fig.savefig('Detection/Efficiency_test/src/figures/efficiency_plots_single_row.png')
 plt.close(fig)
