@@ -10,7 +10,7 @@ from transformers import WhisperFeatureExtractor
 from tqdm import tqdm
 import glob
 import argparse
-from src.model import two_channel_ligo_binary_classifier, TwoChannelLIGOBinaryClassifierCNN
+from Detection.src.model import two_channel_ligo_binary_classifier, TwoChannelLIGOBinaryClassifierCNN
 
 def load_models(lora_weights_path, dense_layers_path, num_classes=1):
     whisper_model = WhisperModel.from_pretrained("openai/whisper-tiny")
@@ -68,17 +68,16 @@ def run_inference_on_segments(model, folder_H1, folder_L1, device, feature_extra
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run inference on LIGO segments")
-    parser.add_argument('--model_path', type=str, default='/GW-Whisper/Detection/results/models/', help="Path to saved models directory")
-    parser.add_argument('--ds_base_path', type=str, default='/GW-Whisper/Detection/data/real_events/GWTC-3/', help="Base path for dataset")
-    parser.add_argument('--output_path', type=str, default='/GW-Whisper/Detection/Real_events/results/results_2_detectors_real_events.hdf', help="Path to save HDF5 output")
+    parser.add_argument('--ds_base_path', type=str, default='Detection/data/real_events/GWTC-3/*', help="Base path for dataset")
+    parser.add_argument('--output_path', type=str, default='Detection/Real_events/results/results_2_detectors_real_events.hdf', help="Path to save HDF5 output")
     parser.add_argument('--encoder', type=str, default='tiny', help="Whisper model size")
-    parser.add_argument('--lora_weights_file', type=str, default='/GW-Whisper/Detection/results/models/Two_detectors/best_lora_weights/', help="LoRA weights file name")
-    parser.add_argument('--dense_layers_file', type=str, default='/GW-Whisper/Detection/results/models/Two_detectors/best_dense_layers.pth', help="Dense layers file name")
+    parser.add_argument('--lora_weights_file', type=str, default='Detection/Real_events/results/models/best_lora_weights_8_32/', help="LoRA weights file name")
+    parser.add_argument('--dense_layers_file', type=str, default='Detection/Real_events/results/models/best_dense_layers_8_32.pth', help="Dense layers file name")
     args = parser.parse_args()
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    model = load_models(os.path.join(args.model_path, args.lora_weights_file), os.path.join(args.model_path, args.dense_layers_file))
+    model = load_models(args.lora_weights_file, args.dense_layers_file)
 
     all_folders = sorted(glob.glob(args.ds_base_path))
     folder_names = [os.path.basename(folder).split('-')[0] for folder in all_folders]
