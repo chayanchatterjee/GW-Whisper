@@ -68,8 +68,8 @@ Jesse B Spencer-Smith, Ph.D. - Vanderbilt University DSI (DSI) Chief Data Scient
 
 #### Contributors
 Roy Lau - code contributor. Email: roy.lau@vanderbilt.edu    
-Haowei Fu - code contributor. Email: haowei.fu@vanderbilt.edu 
-Alara Kaymak - code contributor. Email: alara.kaymak@vanderbilt.edu 
+Haowei Fu - code contributor. Email: haowei.fu@vanderbilt.edu    
+Alara Kaymak - code contributor. Email: alara.kaymak@vanderbilt.edu    
 Echo Yu - code contributor. Email: tianrun.yu@vanderbilt.edu    
 Suyash Deshmukh - code contributor. Email: suyash.deshmukh@vanderbilt.edu      
 Albert Hu - code contributor. Email: yang.hu.1@vanderbilt.edu   
