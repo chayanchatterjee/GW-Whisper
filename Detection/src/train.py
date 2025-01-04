@@ -128,14 +128,14 @@ def evaluate(model, data_loader, device, criterion=nn.BCEWithLogitsLoss()):
     
     return eval_out
 
-def save_models(results_path, peft_model, dense_layers, lora_weights_path, dense_layers_path):
+def save_models(models_path, peft_model, dense_layers, lora_weights_path, dense_layers_path):
     peft_model.to("cpu")
     dense_layers.to("cpu")
 
-    peft_model.save_pretrained(results_path + 'models/' + lora_weights_path)
-    torch.save(dense_layers.state_dict(), results_path + 'models/' + dense_layers_path)
+    peft_model.save_pretrained(os.path.join(models_path, lora_weights_path))
+    torch.save(dense_layers.state_dict(), os.path.join(models_path, dense_layers_path))
 
-def train(model, train_loader, val_loader, optimizer, criterion, device, num_epochs, results_path, checkpoint_path, model_name, writer, save_paths):
+def train(model, train_loader, val_loader, optimizer, criterion, device, num_epochs, models_path, model_name, writer, save_paths):
     model.to(device)
     criterion = criterion.to(device)
     best_val_loss = float('inf')
@@ -146,8 +146,8 @@ def train(model, train_loader, val_loader, optimizer, criterion, device, num_epo
     val_aucs = []
     train_times = []
     
-    best_lora_weights_path = os.path.join(results_path, f"best_{save_paths['lora_weights']}")
-    best_dense_layers_path = os.path.join(results_path, f"best_{save_paths['dense_layers']}")
+    best_lora_weights_path = os.path.join(models_path, f"best_{save_paths['lora_weights']}")
+    best_dense_layers_path = os.path.join(models_path, f"best_{save_paths['dense_layers']}")
     
     for epoch in range(num_epochs):
         model.train()
@@ -191,7 +191,6 @@ def train(model, train_loader, val_loader, optimizer, criterion, device, num_epo
         
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), checkpoint_path)
             
             # Save the best LoRA and dense layer weights
             model.encoder.save_pretrained(best_lora_weights_path)
@@ -202,7 +201,7 @@ def train(model, train_loader, val_loader, optimizer, criterion, device, num_epo
             break
     
     save_models(
-        results_path,
+        models_path,
         peft_model=model.encoder,
         dense_layers=model.classifier,
         lora_weights_path=save_paths['lora_weights'],
@@ -284,8 +283,8 @@ def main(args):
         if args.load_model_path is None:
             print(f"Training {model_name} model from scratch...")
             train_losses, val_losses, val_aucs, train_times = train(
-                model, train_loader, valid_loader, optimizer, criterion, device, args.num_epochs, args.results_path, 
-                f'{model_name}_checkpoint.pt', model_name, writer, save_paths
+                model, train_loader, valid_loader, optimizer, criterion, device, args.num_epochs, args.models_path, 
+            model_name, writer, save_paths
             )
         
         else:
@@ -302,8 +301,8 @@ def main(args):
             }
             
             train_losses, val_losses, val_aucs, train_times = train(
-                model, train_loader, valid_loader, optimizer, criterion, device, args.num_epochs, args.results_path, 
-                f'{model_name}_checkpoint.pt', model_name, writer, save_paths
+                model, train_loader, valid_loader, optimizer, criterion, device, args.num_epochs, args.models_path, 
+                model_name, writer, save_paths
             )
         
         plt.figure()
@@ -314,7 +313,7 @@ def main(args):
         plt.ylabel('Loss')
         plt.legend()
 #        plt.title(f'{model_name} Loss vs Epoch')
-        plt.savefig(f'{args.results_path}/figures/{model_name}_loss.png')
+        plt.savefig(f'{args.figures_path}/{model_name}_loss.png')
         
         plt.figure()
         plt.rc('font', family='serif')
@@ -322,7 +321,7 @@ def main(args):
         plt.xlabel('Epoch')
         plt.ylabel('Validation AUC')
 #        plt.title(f'{model_name} Val AUC vs Epoch')
-        plt.savefig(f'{args.results_path}/figures/{model_name}_val_auc.png')
+        plt.savefig(f'{args.figures_path}/{model_name}_val_auc.png')
     
     writer.close()
 
