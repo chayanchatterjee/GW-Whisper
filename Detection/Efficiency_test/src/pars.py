@@ -6,7 +6,7 @@ store_device = 'cpu'
 dtype = torch.float32
 
 ### path to training, validation and test data
-path = '/workspace/ligo_data/ml-training-strategies/data'
+path = 'Detection/Efficiency_test/data'
 
 train_prefix = 'train_'
 valid_prefix = 'val_'

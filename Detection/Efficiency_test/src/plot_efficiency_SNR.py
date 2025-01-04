@@ -3,7 +3,7 @@ import pandas as pd
 plt.rc('font', family='serif')
 
 # Load the file
-file_path = 'efficiencies/out_efficiencies_run_0000_epoch_0055.txt'  # Replace with the actual path to your file
+file_path = 'Detection/Efficiency_test/src/efficiencies/out_efficiencies_run_0000_epoch_0055.txt'  # Replace with the actual path to your file
 
 # Read the data
 data = pd.read_csv(file_path, delim_whitespace=True, skiprows=1, header=None)
@@ -29,4 +29,4 @@ plt.tick_params(axis='both', labelsize=15)
 plt.tight_layout()
 
 # Show the plot
-plt.savefig('efficiencies/TAP_vs_SNR.png', bbox_inches="tight", facecolor='w', transparent=False, dpi=400)
+plt.savefig('Detection/Efficiency_test/src/figures/TAP_vs_SNR.png', bbox_inches="tight", facecolor='w', transparent=False, dpi=400)
