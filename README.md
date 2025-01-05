@@ -49,7 +49,6 @@ GW-Whisper/
 ├── Glitch_classification/
 │   ├── src/
 │   ├── results/
-|   ├── train.py
 │   └── generate_glitch_dataset.py
 |   └── ...
 └── requirements.txt
