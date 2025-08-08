@@ -5,7 +5,7 @@
 > We implement two adaptations of the original [Whisper model](https://arxiv.org/abs/2212.04356). We perform [binary classification](https://github.com/chayanchatterjee/GW-Whisper/tree/main/Signal_vs_Noise) between GW signals vs. background noise and [multi-class classification](https://github.com/chayanchatterjee/GW-Whisper/tree/main/Glitch_classification) between GWs and noise artifacts (glitches) using off-the-shelf Whisper encoder without any domain-speciifc adjustments. For a more robust GW search over continuous 1-month LIGO data, we implement several GW-specific modifications of the original GW-Whisper configuration. This includes replacing the speech log-mel front end with per-detector Q-transforms (∼1 s, 20–1024 Hz) and a lightweight Q-Adapter (small 2D-CNN) that reshapes/normalizes features. We apply this modified architecture on the [MLGWSC-1](https://github.com/chayanchatterjee/GW-Whisper/tree/main/MLGWSC-1) datasets that benchmarks machine learning models against traditional search algorithms.
 
 
-The architecture of the domain-specific GW-Whisper is shown ![below](https://github.com/chayanchatterjee/GW-Whisper/blob/main/imgs/Figure_1.png):
+> The architecture of the domain-specific GW-Whisper is shown ![below](https://github.com/chayanchatterjee/GW-Whisper/blob/main/imgs/Figure_1.png):
 
 
 ## Overview
