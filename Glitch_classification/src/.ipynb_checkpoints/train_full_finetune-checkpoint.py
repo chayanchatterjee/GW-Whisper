@@ -11,11 +11,9 @@ import matplotlib.pyplot as plt
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.preprocessing import LabelEncoder
 from transformers import WhisperModel
-from src.dataset import one_channel_LigoBinaryData
-from src.model import one_channel_ligo_binary_classifier
-from src.utils import EarlyStopper
-from peft import LoraConfig, get_peft_model
-import fnmatch
+from dataset import one_channel_LigoBinaryData
+from model import one_channel_ligo_binary_classifier
+from utils import EarlyStopper
 
 from matplotlib import rcParams
 
@@ -85,7 +83,7 @@ def evaluate(model, data_loader, device, criterion, label_encoder):
         'all_preds': all_preds,
     }
 
-def train(model, train_loader, val_loader, optimizer, criterion, device, num_epochs, results_path, lora_weights_path, dense_weights_path, model_name, writer, label_encoder, start_epoch=0):
+def train(model, train_loader, val_loader, optimizer, criterion, device, num_epochs, results_path, whisper_weights_path, dense_weights_path, model_name, writer, label_encoder, start_epoch=0):
     model.to(device)
     criterion = criterion.to(device)
     best_val_loss = float('inf')
@@ -122,7 +120,7 @@ def train(model, train_loader, val_loader, optimizer, criterion, device, num_epo
         if val_loss < best_val_loss:
             best_val_loss = val_loss
 
-            torch.save(model.encoder.state_dict(), lora_weights_path)
+            torch.save(model.encoder.state_dict(), whisper_weights_path)
             torch.save(model.classifier.state_dict(), dense_weights_path)
 
             best_cm_path = os.path.join(results_path, f"{model_name}_best_confusion_matrix.png")
@@ -157,51 +155,16 @@ def main(args):
     valid_loader = DataLoader(valid_data, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True)
 
     whisper_model = WhisperModel.from_pretrained(f"openai/whisper-{args.encoder}").encoder.to(device)
-
-    module_names = [name for name, module in whisper_model.named_modules()]
-    patterns = ["layers.*.self_attn.q_proj", "layers.*.self_attn.k_proj", "layers.*.self_attn.v_proj", "layers.*.self_attn.o_proj"]
-
-    matched_modules = []
-    for pattern in patterns:
-        matched_modules.extend(fnmatch.filter(module_names, pattern))
-
-    if args.method == 'DoRA':
-        lora_config = LoraConfig(use_dora=True, r=args.lora_rank, lora_alpha=args.lora_alpha, target_modules=matched_modules)
-        whisper_model_with_dora = get_peft_model(whisper_model, lora_config).to(device)
-
-        for name, param in whisper_model_with_dora.named_parameters():
-            param.requires_grad = 'lora' in name
-
-        model = one_channel_ligo_binary_classifier(whisper_model_with_dora, num_classes=len(label_encoder.classes_))
-
-    elif args.method == 'LoRA':
-        lora_config = LoraConfig(use_dora=False, r=args.lora_rank, lora_alpha=args.lora_alpha, target_modules=matched_modules)
-        whisper_model_with_lora = get_peft_model(whisper_model, lora_config).to(device)
-
-        for name, param in whisper_model_with_lora.named_parameters():
-            param.requires_grad = 'lora' in name
-
-        model = one_channel_ligo_binary_classifier(whisper_model_with_lora, num_classes=len(label_encoder.classes_))
-
+    model = one_channel_ligo_binary_classifier(whisper_model, num_classes=len(label_encoder.classes_))
     model.to(device)
 
     criterion = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate)
 
-    start_epoch = 0
-    if args.checkpoint_path:
-        if os.path.exists(args.checkpoint_path):
-            checkpoint = torch.load(args.checkpoint_path, map_location=device)
-            model.encoder.load_state_dict(checkpoint['encoder_state_dict'])
-            model.classifier.load_state_dict(checkpoint['classifier_state_dict'])
-            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-            start_epoch = checkpoint['epoch']
-            print(f"Resuming training from checkpoint at epoch {start_epoch}")
-
     print(f"Training model...")
     train(
         model, train_loader, valid_loader, optimizer, criterion, device, args.num_epochs, args.results_path,
-        os.path.join(args.results_path, f"{args.model_name}_best_lora_weights.pth"),
+        os.path.join(args.results_path, f"{args.model_name}_best_whisper_weights.pth"),
         os.path.join(args.results_path, f"{args.model_name}_best_dense_weights.pth"),
         args.model_name, writer, label_encoder, start_epoch
     )
@@ -220,9 +183,6 @@ if __name__ == "__main__":
     parser.add_argument("--learning_rate", type=float, default=8e-5, help="Learning rate")
     parser.add_argument("--num_workers", type=int, default=4, help="Number of data loader workers")
     parser.add_argument("--model_name", type=str, default="multi_class_model", help="Name of the model")
-    parser.add_argument("--method", type=str, choices=['LoRA', 'DoRA'], required=True, help="Method to apply (LoRA or DoRA)")
-    parser.add_argument("--lora_rank", type=int, default=8, help="Rank for LoRA")
-    parser.add_argument("--lora_alpha", type=int, default=32, help="Alpha for LoRA")
-    parser.add_argument("--checkpoint_path", type=str, help="Path to the checkpoint file for resuming training")
+    
     args = parser.parse_args()
-    main(args)
+   
