@@ -17,6 +17,7 @@ LIGO consists of two large-scale interferometers located in Hanford, Washington,
 |------------|---------|-------------|-------------------|
 | [Signal_vs_Noise](https://github.com/chayanchatterjee/GW-Whisper/tree/main/Signal_vs_Noise) | Public | Code repo for signal vs. noise classification | [link](https://arxiv.org/abs/2412.20789) |
 | [Glitch classification](https://github.com/chayanchatterjee/GW-Whisper/tree/main/Glitch_classification)| Public | Code repo for glitch classification | [link](https://arxiv.org/abs/2412.20789) |
+| [MLGWSC-1 analysis](https://github.com/chayanchatterjee/GW-Whisper/tree/main/MLGWSC-1)| Public | Updated model for MLGWSC-1 analysis | [link](https://arxiv.org/abs/2412.20789) 
 
 ## Getting Started
 
@@ -49,6 +50,10 @@ GW-Whisper/
 │   ├── results/
 │   └── generate_glitch_dataset.py
 |   └── ...
+├── MLGWSC-1/
+│   └── train.py
+|   └── inference.py
+|   └── evaluate.py
 └── requirements.txt
 └── ...
 ```
