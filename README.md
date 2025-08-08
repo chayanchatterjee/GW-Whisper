@@ -7,7 +7,7 @@
 
 > The architecture of the domain-specific GW-Whisper is shown:
 >
-> ![below](https://github.com/chayanchatterjee/GW-Whisper/blob/main/imgs/Figure_1.pdf)
+> ![below](https://github.com/chayanchatterjee/GW-Whisper/blob/main/imgs/Figure_1_modified.png)
 
 
 ## Overview
